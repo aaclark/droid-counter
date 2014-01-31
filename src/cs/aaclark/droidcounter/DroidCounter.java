@@ -26,8 +26,8 @@ public class DroidCounter extends Activity {
 	private int DEL_COUNTER = 4;
 	private int AGR_STATS = 8;
 	
-	private ArrayList<CounterModel> counters; 
-	private ArrayAdapter<CounterModel> adapter;
+	protected ArrayList<CounterModel> counterModelArray = new ArrayList<CounterModel>(); 
+	private ArrayAdapter<CounterModel> listViewAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +38,19 @@ public class DroidCounter extends Activity {
 		ListView listView = (ListView) findViewById(R.id.listView);
 		//Create an ArrayList into which we will load
 		//our counters (from file)
-		ArrayList<CounterModel> counters = new ArrayList<CounterModel>();
 		// TODO Implement loadCounters(file);
 		
 		//Bind a suitably initialized adapter to our listView
-		adapter = new ArrayAdapter<CounterModel>(
-						this,
-						android.R.layout.simple_list_item_1,
-						counters);
 		//Set this as our listView's adapter
-		listView.setAdapter(adapter);
+		listViewAdapter = new ArrayAdapter<CounterModel>(
+				this,
+				android.R.layout.simple_list_item_1,
+				counterModelArray);
+		listView.setAdapter(listViewAdapter);
+				
 		//...and let list items access context menus
 		registerForContextMenu(listView);
 		
-				
 		// This is for regular (not-context) clicks...
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -84,8 +83,8 @@ public class DroidCounter extends Activity {
 		case(R.id.action_new_counter):
 			//'+' button adds new counters
 			// editCounter(NEW_COUNTER);
-			counters.add(new CounterModel("New", 0));
-			adapter.notifyDataSetChanged();
+			counterModelArray.add(new CounterModel("name", 0));
+			listViewAdapter.notifyDataSetChanged();
 			return true;
 		case(R.id.action_edit_counter):
 			//'+' button adds new counters
