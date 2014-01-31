@@ -31,6 +31,7 @@ public class ReadWriteHandler {
 
 	}
 
+	//Reader from json -> Object and cat into ArrayList
 	public ArrayList<CounterModel> readIn() throws IOException{
 		
 		// erase bidirectional buffer
@@ -46,6 +47,7 @@ public class ReadWriteHandler {
 		return counterModelsBuffer;
 	}
 	
+	//Write from Object -> Json as it is popped from ArrayList
 	public void writeOut(ArrayList<CounterModel> writeBuffer) throws IOException{
 		
 		// erase bidirectional buffer

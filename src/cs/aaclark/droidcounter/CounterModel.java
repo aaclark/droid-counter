@@ -10,19 +10,20 @@ public class CounterModel implements Serializable {
 	private int count;
 	private Date modified;
 	
-	//Init
+	//Constructor
 	public CounterModel(String newName, int init){
 		this.name = newName;
 		this.count = init;
 		this.modified = new Date();
 	}
 	
+	//Incrementor
 	public void increment(){
 		this.count++;
 		this.modified = new Date();
 	}
 	
-	// Always WriteOut and ReadIn in same order!
+	// Always WriteOut and ReadIn in same order
 	public void writeObject(java.io.ObjectOutputStream out) throws IOException{
 		out.writeUTF(name);		
 		out.writeInt(count);
@@ -36,10 +37,12 @@ public class CounterModel implements Serializable {
 		modified = new Date(in.readLong());	
 	}
 	
+	//implement/override toString
 	public String toString(){
 		return "["+this.count+"] - "+this.name;
 	}
 	
+	//easier to just get the Name for ListView
 	public String getName(){
 		return name;
 	}

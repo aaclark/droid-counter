@@ -28,13 +28,17 @@ import android.widget.ListView;
 
 public class DroidCounter extends Activity {
 
+	//Set up some standards for passing intents
 	private final int NEW_COUNTER = 1;
 	private final int EDIT_COUNTER = 2;
 	private final int DEL_COUNTER = 3;
 	private final int AGR_STATS = 4;
+	
+	//Variables for our file IO handling
 	private final String filename = "droidcounter.sav";
 	private static ReadWriteHandler rwHandler;
 
+	//Define our core system variables
 	protected ArrayList<CounterModel> counterModelArray = new ArrayList<CounterModel>(); 
 	private ArrayAdapter<CounterModel> listViewAdapter;
 
@@ -100,7 +104,7 @@ public class DroidCounter extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 		case(R.id.action_new_counter):
-			CounterModel newCounter = new CounterModel("New Counter", 0);
+			CounterModel newCounter = new CounterModel("New Counter (Long-Press to Edit)", 0);
 		counterModelArray.add(newCounter);
 		listViewAdapter.notifyDataSetChanged();
 		return true;
