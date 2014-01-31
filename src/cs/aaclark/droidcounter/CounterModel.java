@@ -23,14 +23,14 @@ public class CounterModel implements Serializable {
 	}
 	
 	// Always WriteOut and ReadIn in same order!
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException{
+	public void writeObject(java.io.ObjectOutputStream out) throws IOException{
 		out.writeUTF(name);		
 		out.writeInt(count);
 		out.writeLong(modified.getTime());
 		
 	}
 	
-	private void readObject(java.io.ObjectInputStream in) throws IOException{
+	public void readObject(java.io.ObjectInputStream in) throws IOException{
 		name = in.readUTF();
 		count = in.readInt();
 		modified = new Date(in.readLong());	
@@ -38,6 +38,10 @@ public class CounterModel implements Serializable {
 	
 	public String toString(){
 		return "["+this.count+"] - "+this.name;
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 }
