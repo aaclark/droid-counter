@@ -32,28 +32,41 @@ public class DroidCounter extends Activity {
 	private final int EDIT_COUNTER = 2;
 	private final int DEL_COUNTER = 3;
 	private final int AGR_STATS = 4;
-	
+	private final String filename = "droidcounter.sav";
+	private static ReadWriteHandler rwHandler;
+
 	protected ArrayList<CounterModel> counterModelArray = new ArrayList<CounterModel>(); 
 	private ArrayAdapter<CounterModel> listViewAdapter;
-	
+
+	// onCreate from Activity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_droid_counter);
 
 		//Identify listView from Layout for ArrayAdapter
 		ListView listView = (ListView) findViewById(R.id.listView);
-		
+
 		//Bind listView adapter
 		listViewAdapter = new ArrayAdapter<CounterModel>(
 				this,
 				android.R.layout.simple_list_item_1,
 				counterModelArray);
 		listView.setAdapter(listViewAdapter);
-				
+
+		//Populate ListView
+		try {
+			rwHandler = new ReadWriteHandler(filename);
+			counterModelArray = rwHandler.readIn();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		//...and let list items access context menus
 		registerForContextMenu(listView);
-		
+
 		// This is for regular (not-context) clicks...
 		listView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
 			@Override
@@ -62,35 +75,40 @@ public class DroidCounter extends Activity {
 				CounterModel counter = (CounterModel) parent.getItemAtPosition(position);
 				counter.increment();
 				listViewAdapter.notifyDataSetChanged();
-				}
 			}
-		);
+		}
+				);
 
 	}
-	
+
+	// onResume from Activity
 	protected void onResume(Bundle savedInstanceState){
 		super.onResume();
+
+		try {
+			counterModelArray = rwHandler.readIn();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
+	// applies Action Bar menu items
+
 	//Top-Bar Menu Actions
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
-		// applies Action Bar menu items
 		switch(item.getItemId()){
 		case(R.id.action_new_counter):
-			//'+' button adds new counters
-			// INTENT into editcounter
-			// editCounter(NEW_COUNTER);
-			
-			CounterModel newCounter = new CounterModel("<long-press to rename>", 0);
-			counterModelArray.add(newCounter);
-			listViewAdapter.notifyDataSetChanged();
-			return true;
+			CounterModel newCounter = new CounterModel("New Counter", 0);
+		counterModelArray.add(newCounter);
+		listViewAdapter.notifyDataSetChanged();
+		return true;
 		default: 
 			return false;
 		}
 	}
-	
+
 	//Context Menu Actions
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo){
@@ -103,9 +121,7 @@ public class DroidCounter extends Activity {
 			menu.add(0, view.getId(), 0, "Statistics");
 		}
 	}
-	
-	
-	
+
 	//Don't remember what this does
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
@@ -113,12 +129,12 @@ public class DroidCounter extends Activity {
 		inflater.inflate(R.menu.droid_counter,menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	private void editCounter(int requestCode) {
 		Intent counterEditor = new Intent(this, EditCounterActivity.class);
 		startActivityForResult(counterEditor, requestCode);		
 	}
-	
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		switch(requestCode){
 		case(NEW_COUNTER):
