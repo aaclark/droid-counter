@@ -33,8 +33,6 @@ public class DroidCounter extends Activity {
 	private final int DEL_COUNTER = 3;
 	private final int AGR_STATS = 4;
 	
-	private String saveFileName = "counterState.sav";
-	private static SaveManager filePipe;
 	protected ArrayList<CounterModel> counterModelArray = new ArrayList<CounterModel>(); 
 	private ArrayAdapter<CounterModel> listViewAdapter;
 	
@@ -45,9 +43,6 @@ public class DroidCounter extends Activity {
 
 		//Identify listView from Layout for ArrayAdapter
 		ListView listView = (ListView) findViewById(R.id.listView);
-		
-		//Initialize the file IO pipe
-		filePipe = new SaveManager(saveFileName);
 		
 		//Bind listView adapter
 		listViewAdapter = new ArrayAdapter<CounterModel>(
@@ -60,14 +55,17 @@ public class DroidCounter extends Activity {
 		registerForContextMenu(listView);
 		
 		// This is for regular (not-context) clicks...
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		listView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View arg1,
-					int arg2, long arg3) {
-				// TODO Auto-generated method stub
+			public void onItemClick(AdapterView<?> parent, View view, 
+					int position, long id){
+				CounterModel counter = (CounterModel) parent.getItemAtPosition(position);
+				counter.increment();
+				listViewAdapter.notifyDataSetChanged();
+				}
 			}
-		});
-		
+		);
+
 	}
 	
 	protected void onResume(Bundle savedInstanceState){
@@ -85,18 +83,8 @@ public class DroidCounter extends Activity {
 			// editCounter(NEW_COUNTER);
 			
 			CounterModel newCounter = new CounterModel("<long-press to rename>", 0);
-			try {
-				filePipe.AppendObject(newCounter);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			counterModelArray.add(newCounter);
 			listViewAdapter.notifyDataSetChanged();
-			return true;
-		case(R.id.action_edit_counter):
-			//'+' button adds new counters
-			editCounter(EDIT_COUNTER);
 			return true;
 		default: 
 			return false;
